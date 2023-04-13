@@ -8,6 +8,7 @@ namespace Day03
 		private readonly int maxX;
 		private readonly int minY;
 		private readonly int maxY;
+		private readonly string id;
 		private static readonly Regex dataRegex 
 			= new Regex(@"#(?<id>\d+) @ (?<x>\d+),(?<y>\d+): (?<width>\d+)x(?<height>\d+)");
 
@@ -18,6 +19,12 @@ namespace Day03
 			maxX = minX + int.Parse(match.Groups["width"].Value) - 1;
 			minY = int.Parse(match.Groups["y"].Value);
 			maxY = minY + int.Parse(match.Groups["height"].Value) - 1;
+			id = match.Groups["id"].Value;
+		}
+
+		public string GetID()
+		{
+			return id;
 		}
 
 		public HashSet<(int, int)> GetOverlap(Square other)
