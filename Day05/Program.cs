@@ -1,7 +1,25 @@
 ﻿var inputLine = File.ReadAllLines("input.txt")[0];
 Part1(inputLine);
+Part2(inputLine);
 
 static void Part1(string inputLine)
+{	
+	Console.WriteLine($"Part 1: {GetFinalLength(inputLine)}");
+}
+
+static void Part2(string inputLine)
+{
+	var shortestLength = int.MaxValue;
+	for (char thisUnit = 'a'; thisUnit <= 'z'; thisUnit++)
+	{
+		var thisString = inputLine.Replace(thisUnit.ToString(), "");
+		thisString = thisString.Replace(char.ToUpper(thisUnit).ToString(), "");
+		shortestLength = Math.Min(shortestLength, GetFinalLength(thisString));
+	}
+	Console.WriteLine($"Part 2: {shortestLength}");
+}
+
+static int GetFinalLength(string inputLine)
 {
 	int reactionCount;
 	var lastString = inputLine;
@@ -22,5 +40,5 @@ static void Part1(string inputLine)
 			lastString = thisString;
 		}
 	} while (reactionCount > 0);
-	Console.WriteLine($"Part 1: {lastString.Length}");
+	return lastString.Length;
 }
