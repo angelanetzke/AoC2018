@@ -45,5 +45,16 @@ namespace Day04
 			return (totalSleepTime, mostCommonSleepMinute);
 		}
 
+		public (int, int) GetSleepStats2()
+		{
+			if (counts.Keys.Count == 0)
+			{
+				return (0, 0);
+			}
+			var mostCommonSleepMinute = counts.MaxBy(x => x.Value).Key;
+			var minuteSleepTime = counts[mostCommonSleepMinute];
+			return (minuteSleepTime, mostCommonSleepMinute);
+		}
+
 	}
 }

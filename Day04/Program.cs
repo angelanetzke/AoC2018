@@ -1,9 +1,37 @@
 ﻿using Day04;
 
 var allLines = File.ReadAllLines("input.txt");
-Part1(allLines);
+var guards = GetGuards(allLines);
+Part1(guards);
+Part2(guards);
 
-static void Part1(string[] allLines)
+static void Part1(Dictionary<string, Guard> guards)
+{
+	var guardData = new List<(string, int, int)>();
+	foreach (string thisGuardID in guards.Keys)
+	{
+		var thisGuardStats = guards[thisGuardID].GetSleepStats();
+		guardData.Add((thisGuardID, thisGuardStats.Item1, thisGuardStats.Item2));
+	}
+	guardData = guardData.OrderBy(x => x.Item2).ToList();
+	var result = int.Parse(guardData.Last().Item1) * guardData.Last().Item3;
+	Console.WriteLine($"Part 1: {result}");
+}
+
+static void Part2(Dictionary<string, Guard> guards)
+{
+	var guardData = new List<(string, int, int)>();
+	foreach (string thisGuardID in guards.Keys)
+	{
+		var thisGuardStats = guards[thisGuardID].GetSleepStats2();
+		guardData.Add((thisGuardID, thisGuardStats.Item1, thisGuardStats.Item2));
+	}
+	guardData = guardData.OrderBy(x => x.Item2).ToList();
+	var result = int.Parse(guardData.Last().Item1) * guardData.Last().Item3;
+	Console.WriteLine($"Part 2: {result}");
+}
+
+static Dictionary<string, Guard> GetGuards(string[] allLines)
 {
 	var eventList = new List<(string, int, string)>();
 	foreach (string thisLine in allLines)
@@ -35,13 +63,5 @@ static void Part1(string[] allLines)
 			currentGuard.AddEvent(thisEvent.Item2, isAwake);
 		}
 	}
-	var guardData = new List<(string, int, int)>();
-	foreach (string thisGuardID in guards.Keys)
-	{
-		var thisGuardStats = guards[thisGuardID].GetSleepStats();
-		guardData.Add((thisGuardID, thisGuardStats.Item1, thisGuardStats.Item2));
-	}
-	guardData = guardData.OrderBy(x => x.Item2).ToList();
-	var result = int.Parse(guardData.Last().Item1) * guardData.Last().Item3;
-	Console.WriteLine($"Part 1: {result}");
+	return guards;
 }
