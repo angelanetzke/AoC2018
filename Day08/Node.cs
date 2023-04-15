@@ -48,5 +48,29 @@ namespace Day08
 			return sum;
 		}
 
+		public int GetValue()
+		{
+			int sum = 0;
+			if (children.Count == 0)
+			{				
+				for (int i = metadataStart; i < metadataStart + metadataCount; i++)
+				{
+					sum += values[i];
+				}				
+			}
+			else
+			{
+				for (int i = metadataStart; i < metadataStart + metadataCount; i++)
+				{
+					var childIndex = values[i] - 1;
+					if (childIndex < children.Count())
+					{
+						sum += children[childIndex].GetValue();
+					}					
+				}
+			}
+			return sum;
+		}
+
 	}
 }
