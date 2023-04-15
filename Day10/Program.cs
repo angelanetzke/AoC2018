@@ -1,9 +1,9 @@
 ﻿using Day10;
 
 var allLines = File.ReadAllLines("input.txt");
-Part1(allLines);
+Part1AndPart2(allLines);
 
-static void Part1(string[] allLines)
+static void Part1AndPart2(string[] allLines)
 {
 	var lightList = new List<Light>();
 	foreach (string thisLine in allLines)
@@ -14,8 +14,10 @@ static void Part1(string[] allLines)
 	var maxY = lightList.Select(thisLight => thisLight.GetY()).Max();
 	var lastHeight = int.MaxValue;
 	var thisHeight = maxY - minY + 1;
+	int secondCount = -1;
 	while (thisHeight < lastHeight)
 	{
+		secondCount++;
 		lastHeight = thisHeight;
 		foreach (Light thisLight in lightList)
 		{
@@ -53,4 +55,5 @@ static void Part1(string[] allLines)
 		}
 		Console.WriteLine();
 	}
+	Console.WriteLine($"Part 2: {secondCount}");
 }
