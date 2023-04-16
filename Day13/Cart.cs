@@ -5,17 +5,18 @@ namespace Day13
 		private int x;
 		private int y;
 		private enum CartDirection { N, E, S, W };
-		private CartDirection currentDirection = CartDirection.N;
-		private readonly Dictionary<CartDirection, (int, int)> cartMovement = new ()
+		private CartDirection currentDirection = CartDirection.N;		
+		private enum TurnDirection { LEFT, STRAIGHT, RIGHT };
+		private TurnDirection nextTurn;
+		public bool isRemoved { set; get; } = false;
+		private static readonly Dictionary<CartDirection, (int, int)> cartMovement = new ()
 		{
 			{ CartDirection.N, (0, -1) },
 			{ CartDirection.E, (1, 0) },
 			{ CartDirection.S, (0, 1) },
 			{ CartDirection.W, (-1, 0) }
 		};
-		private enum TurnDirection { LEFT, STRAIGHT, RIGHT };
-		private TurnDirection nextTurn;
-		private readonly Dictionary<(CartDirection, TurnDirection), CartDirection> turnResult = new()
+		private static readonly Dictionary<(CartDirection, TurnDirection), CartDirection> turnResult = new()
 		{
 			{ (CartDirection.N, TurnDirection.LEFT), CartDirection.W },
 			{ (CartDirection.N, TurnDirection.STRAIGHT), CartDirection.N },
@@ -30,7 +31,7 @@ namespace Day13
 			{ (CartDirection.W, TurnDirection.STRAIGHT), CartDirection.W },
 			{ (CartDirection.W, TurnDirection.RIGHT), CartDirection.N }
 		};
-		private readonly Dictionary<(CartDirection, char), CartDirection> curveResult = new()
+		private static readonly Dictionary<(CartDirection, char), CartDirection> curveResult = new()
 		{
 			{ (CartDirection.N, '/'), CartDirection.E },
 			{ (CartDirection.N, '\\'), CartDirection.W },
@@ -41,13 +42,13 @@ namespace Day13
 			{ (CartDirection.W, '/'), CartDirection.S },
 			{ (CartDirection.W, '\\'), CartDirection.N }
 		};
-		private readonly Dictionary<char, CartDirection> charToDirection = new()
+		private static readonly Dictionary<char, CartDirection> charToDirection = new()
 		{
 			{ '^', CartDirection.N },
 			{ '>', CartDirection.E },
 			{ 'v', CartDirection.S },
 			{ '<', CartDirection.W }
-		};
+		};		
 
 		public Cart(int x, int y, char directionChar)
 		{
