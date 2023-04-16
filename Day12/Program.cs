@@ -27,7 +27,7 @@ static long RunSimulation(string[] allLines, long generationCount, Dictionary<st
 {	
 	var plants = new HashSet<long>();
 	var nextPlants = new HashSet<long>();
-	var seen = new Dictionary<string, long>();	
+	var seen = new HashSet<string>();	
 	for (int i = 15; i < allLines[0].Length; i++)
 	{
 		if (allLines[0][i] == '#')
@@ -39,11 +39,11 @@ static long RunSimulation(string[] allLines, long generationCount, Dictionary<st
 	for (long generationNumber = 1L; generationNumber <= generationCount; generationNumber++)
 	{
 		var plantPattern = GetPlantPattern(plants);
-		if (seen.ContainsKey(plantPattern))
+		if (seen.Contains(plantPattern))
 		{
 			return plants.Sum() + plants.Count() * (generationCount - generationNumber + 1);
 		}
-		seen[plantPattern] = generationNumber;
+		seen.Add(plantPattern);
 		nextPlants.Clear();
 		for (long plantNumber = plants.Min() - 2; plantNumber <= plants.Max() + 2; plantNumber++)
 		{
