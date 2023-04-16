@@ -1,19 +1,33 @@
 ﻿using System.Text;
 
 var allLines = File.ReadAllLines("input.txt");
-Part1(allLines);
-
-static void Part1(string[] allLines)
+var spread = new Dictionary<string, char>();
+for (int i = 2; i < allLines.Length; i++)
 {
-	var spread = new Dictionary<string, char>();
-	var plants = new HashSet<int>();
-	var nextPlants = new HashSet<int>();
-	for (int i = 2; i < allLines.Length; i++)
-	{
-		var inputString = allLines[i].Split(" => ")[0];
-		var outputChar = allLines[i].Split(" => ")[1][0];
-		spread[inputString] = outputChar;
-	}
+	var inputString = allLines[i].Split(" => ")[0];
+	var outputChar = allLines[i].Split(" => ")[1][0];
+	spread[inputString] = outputChar;
+}
+Part1(allLines, spread);
+Part2(allLines, spread);
+
+static void Part1(string[] allLines, Dictionary<string, char> spread)
+{
+	var plantSum = RunSimulation(allLines, 20, spread);
+	Console.WriteLine($"Part 1: {plantSum}");
+}
+
+static void Part2(string[] allLines, Dictionary<string, char> spread)
+{
+	var plantSum = RunSimulation(allLines, 50_000_000_000, spread);
+	Console.WriteLine($"Part 2: {plantSum}");
+}
+
+static long RunSimulation(string[] allLines, long generationCount, Dictionary<string, char> spread)
+{	
+	var plants = new HashSet<long>();
+	var nextPlants = new HashSet<long>();
+	var seen = new Dictionary<string, long>();	
 	for (int i = 15; i < allLines[0].Length; i++)
 	{
 		if (allLines[0][i] == '#')
@@ -21,12 +35,17 @@ static void Part1(string[] allLines)
 			plants.Add(i - 15);
 		}
 	}
-	var generationCount = 20;
 	var builder = new StringBuilder();
-	for (int i = 1; i <= generationCount; i++)
+	for (long generationNumber = 1L; generationNumber <= generationCount; generationNumber++)
 	{
+		var plantPattern = GetPlantPattern(plants);
+		if (seen.ContainsKey(plantPattern))
+		{
+			return plants.Sum() + plants.Count() * (generationCount - generationNumber + 1);
+		}
+		seen[plantPattern] = generationNumber;
 		nextPlants.Clear();
-		for (int plantNumber = plants.Min() - 2; plantNumber <= plants.Max() + 2; plantNumber++)
+		for (long plantNumber = plants.Min() - 2; plantNumber <= plants.Max() + 2; plantNumber++)
 		{
 			builder.Clear();
 			for (int neighbor = -2; neighbor <= 2; neighbor++)
@@ -45,8 +64,24 @@ static void Part1(string[] allLines)
 				nextPlants.Add(plantNumber);
 			}
 		}
-		plants = new HashSet<int>(nextPlants);
+		plants = new HashSet<long>(nextPlants);
 	}
-	var plantSum = plants.Sum();
-	Console.WriteLine($"Part 1: {plantSum}");
+	return plants.Sum();
+}
+
+static string GetPlantPattern(HashSet<long> plants)
+{
+	var builder = new StringBuilder();
+	for (long i = plants.Min(); i <= plants.Max(); i++)
+	{
+		if (plants.Contains(i))
+		{
+			builder.Append('#');
+		}
+		else
+		{
+			builder.Append('.');
+		}
+	}
+	return builder.ToString();
 }
