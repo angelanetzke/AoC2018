@@ -10,7 +10,11 @@ namespace Day15
 			{ 'E', 'G' },
 			{ 'G', 'E' }
 		};
-		private static readonly int attack = 3;
+		private static readonly Dictionary<char, int> attack = new ()
+		{
+			{ 'E', 3 },
+			{ 'G', 3 }
+		};
 		private int HP = 200;
 		public bool isRemoved { set; get; } = false;
 		private static (int, int)[] offsets = new (int, int)[]{ (-1, 0), (0, -1), (0, 1), (1, 0) };
@@ -20,6 +24,11 @@ namespace Day15
 			this.row = row;
 			this.column = column;
 			this.warriorType = warriorType;
+		}
+
+		public static void SetElfAttackPower(int newAttack)
+		{
+			attack['E'] = newAttack;
 		}
 
 		public (int, int) GetLocation()
@@ -61,7 +70,7 @@ namespace Day15
 					.OrderBy(t => t.GetHP())
 					.ThenBy(t => t.GetLocation())
 					.First();
-				other.HP -= attack;
+				other.HP -= attack[warriorType];
 				if (other.HP <= 0)
 				{
 					other.isRemoved = true;

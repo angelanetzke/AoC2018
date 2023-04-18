@@ -7,9 +7,12 @@ namespace Day15
 		private readonly HashSet<(int, int)> spaces = new ();
 		private List<Warrior> warriorList = new ();
 		private int completeTurnCount = 0;
+		private int startingElfCount = 0;
+		private int currentElfCount = 0;
 
-		public Battlefield(string[] allLines)
+		public Battlefield(string[] allLines, int elfAttackPower)
 		{
+			Warrior.SetElfAttackPower(elfAttackPower);
 			for (int row = 0; row < allLines.Length; row++)
 			{
 				for (int column = 0; column < allLines[row].Length; column++)
@@ -18,7 +21,13 @@ namespace Day15
 					{
 						spaces.Add((row, column));
 					}
-					if (allLines[row][column] == 'E' || allLines[row][column] == 'G')
+					if (allLines[row][column] == 'E')
+					{
+						startingElfCount++;
+						warriorList.Add(new Warrior(row, column, allLines[row][column]));
+						spaces.Add((row, column));
+					}
+					if (allLines[row][column] == 'G')
 					{
 						warriorList.Add(new Warrior(row, column, allLines[row][column]));
 						spaces.Add((row, column));
@@ -42,14 +51,16 @@ namespace Day15
 				}
 			}
 			warriorList = warriorList.Where(w => !w.isRemoved).ToList();
+			currentElfCount = warriorList.Count(w => w.GetWarriorType() == 'E');
 			completeTurnCount++;
 			return true;			
 		}
 
-		public (int, int) GetStats()
+		public (int, int, int) GetStats()
 		{
 			var totalHP = warriorList.Where(w => !w.isRemoved).Select(w => w.GetHP()).Sum();
-			return (completeTurnCount, totalHP);
+			var elfDeaths = startingElfCount - currentElfCount;
+			return (completeTurnCount, totalHP, elfDeaths);
 		}
 
 	}
