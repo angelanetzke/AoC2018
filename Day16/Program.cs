@@ -1,25 +1,25 @@
 ﻿using Day16;
 
 var allLines = File.ReadAllLines("input.txt");
-Part1(allLines);
+Part1And2(allLines);
 
-static void Part1(string[] allLines)
-{
-	var greaterThan3Count = 0;
+static void Part1And2(string[] allLines)
+{	
 	var isLastLineBlank = true;
-	Device? nextDevice = null;
+	Device theDevice = new Device();
 	var nextData = new List<string>();
-	foreach (string thisLine in allLines)
+	var sampleEndLine = -1;
+	for (int i = 0; i < allLines.Length; i++)
 	{
+		var thisLine = allLines[i];
 		if  (thisLine.Length == 0)
 		{
 			if (isLastLineBlank)
 			{
+				sampleEndLine = i;
 				break;
 			}
-			nextDevice = new Device(nextData);
-			var matchCount = nextDevice.CountMatches();
-			greaterThan3Count += matchCount >= 3 ? 1 : 0;
+			theDevice.AddSample(nextData);
 			nextData.Clear();
 			isLastLineBlank = true;
 		}
@@ -29,5 +29,16 @@ static void Part1(string[] allLines)
 			isLastLineBlank = false;
 		}
 	}
-	Console.WriteLine($"Part 1: {greaterThan3Count}");
+	var atLeastThreeCount = theDevice.CountAtLeastThree();
+	Console.WriteLine($"Part 1: {atLeastThreeCount}");
+	var program = new List<string>();
+	for (int i = sampleEndLine; i < allLines.Length; i++)
+	{
+		if (allLines[i].Length > 0)
+		{
+			program.Add(allLines[i]);
+		}
+	}
+	var result = theDevice.Run(program);
+	Console.WriteLine($"Part 2: {result}");
 }
