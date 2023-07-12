@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Day18
 {
 	internal class Area
@@ -6,6 +8,7 @@ namespace Day18
 		private Dictionary<(int, int), State> currentStates = new ();
 		private readonly int height;
 		private readonly int width;
+		private Dictionary<string, (long iteration, int resourceValue)> cache = new ();
 
 		public Area(string[] allLines)
 		{
@@ -29,6 +32,7 @@ namespace Day18
 					}
 				}
 			}
+			UpdateCache(0);
 		}
 
 		public void Iterate()
@@ -63,12 +67,21 @@ namespace Day18
 			currentStates = temp;
 		}
 
-		public void Iterate(int times)
+		public int Iterate(long times)
 		{
-			for (int i = 1; i <= times; i++)
+			for (long i = 1; i <= times; i++)
 			{
 				Iterate();
+				var lastEntry = UpdateCache(i);
+				if (lastEntry != i)
+				{
+					var period = i - lastEntry;
+					var equivalentIteration = (times - lastEntry) % period + lastEntry;
+					return cache.Where(x => x.Value.iteration == equivalentIteration)
+						.Select(x => x.Value.resourceValue).First();
+				}
 			}
+			return GetResourceValue();
 		}
 
 		private List<State> GetNeighborStates((int, int) location)
@@ -94,6 +107,27 @@ namespace Day18
 		public int GetResourceValue()
 		{
 			return currentStates.Values.Count(x => x == State.Trees) * currentStates.Values.Count(x => x == State.Lumberyard);
+		}
+
+		private long UpdateCache(long iteration)
+		{
+			var builder = new StringBuilder();
+			for (int row = 0; row < height; row++)
+			{
+				for (int column = 0; column < width; column++)
+				{
+					builder.Append(currentStates[(row, column)]);
+				}
+			}
+			if (cache.Keys.Contains(builder.ToString()))
+			{
+				return cache[builder.ToString()].Item1;
+			}
+			else
+			{
+				cache[builder.ToString()] = (iteration, GetResourceValue());
+				return iteration;
+			}			
 		}
 
 	}
