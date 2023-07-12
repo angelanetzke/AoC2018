@@ -48,18 +48,18 @@ namespace Day18
 						case State.Ground:
 							temp[(row, column)] 
 								= neighborList.Count(x => x == State.Trees) >= 3 
-								? State.Trees : State.Ground;
+									? State.Trees : State.Ground;
 							break;
 						case State.Trees:
 							temp[(row, column)] 
 								= neighborList.Count(x => x == State.Lumberyard) >= 3 
-								? State.Lumberyard : State.Trees;
+									? State.Lumberyard : State.Trees;
 							break;
 						case State.Lumberyard:
 							temp[(row, column)] 
 								= neighborList.Count(x => x == State.Lumberyard) >= 1 
-								&& neighborList.Count(x => x == State.Trees) >= 1
-								? State.Lumberyard : State.Ground;
+									&& neighborList.Count(x => x == State.Trees) >= 1
+									? State.Lumberyard : State.Ground;
 							break;
 					}
 				}
@@ -116,7 +116,7 @@ namespace Day18
 			{
 				for (int column = 0; column < width; column++)
 				{
-					builder.Append(currentStates[(row, column)]);
+					builder.Append(currentStates[(row, column)].ToString());
 				}
 			}
 			if (cache.Keys.Contains(builder.ToString()))
