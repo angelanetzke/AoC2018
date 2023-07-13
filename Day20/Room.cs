@@ -2,8 +2,8 @@ namespace Day20
 {
 	internal class Room
 	{
-		public readonly static Dictionary<(int x, int y), Room> allRooms = new ();
-		public enum Direction { N, S, W, E }
+		private readonly static Dictionary<(int x, int y), Room> allRooms = new ();
+		private enum Direction { N, S, W, E }
 		private Dictionary<Direction, bool> doors = new ()
 		{
 			{ Direction.N, false },
@@ -12,13 +12,14 @@ namespace Day20
 			{ Direction.E, false }
 		};
 		private readonly (int x, int y) location;
+		private static Dictionary<(int x, int y), int> distances = new ();
 
-		public Room((int, int) location)
+		private Room((int, int) location)
 		{
 			this.location = location;
 		}
 
-		public (int, int) Move(Direction direction)
+		private (int, int) Move(Direction direction)
 		{
 			int nextX = location.x;
 			int nextY = location.y;
@@ -63,7 +64,7 @@ namespace Day20
 			return (nextX, nextY);
 		}
 
-		public List<(int, int)> GetNeighbors()
+		private List<(int, int)> GetNeighbors()
 		{
 			var neighborList = new List<(int, int)>();
 			if (doors[Direction.N])
@@ -120,9 +121,9 @@ namespace Day20
 			}
 		}
 
-		public static int GetLongestDistace()
+		private static void CalculateDistances()
 		{
-			var distances = new Dictionary<(int x, int y), int>();
+			distances.Clear();
 			var queue = new Queue<(int x, int y)>();
 			var visited = new HashSet<(int x, int y)>();
 			distances[(0, 0)] = 0;
@@ -142,7 +143,24 @@ namespace Day20
 					}
 				}
 			}
+		}
+
+		public static int GetLongestDistace()
+		{
+			if (distances.Count == 0)
+			{
+				CalculateDistances();
+			}
 			return distances.Select(x => x.Value).Max();
+		}
+
+		public static int Count1000DoorDistances()
+		{
+			if (distances.Count == 0)
+			{
+				CalculateDistances();
+			}
+			return distances.Select(x => x.Value).Count(x => x >= 1000);
 		}
 
 	}
