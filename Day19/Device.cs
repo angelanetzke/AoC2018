@@ -5,20 +5,24 @@ namespace Day19
 		private int[] registers = Enumerable.Repeat(0, 6).ToArray();
 		private readonly string[] commandList;
 		private readonly int ipRegister;
-		
+
 		public Device(string[] commandList)
 		{
 			ipRegister = int.Parse(commandList[0].Split(' ')[1]);
 			this.commandList = commandList.Skip(1).Take(commandList.Length - 1).ToArray();
 		}
 
-		public int Execute()
+		public int Execute(bool isPart2)
 		{
+			if (isPart2)
+			{
+				registers = new int[] {1, 0, 0, 0, 0, 0};
+			}
 			int ip = 0;
 			while (0 <= ip && ip < commandList.Length)
 			{
-				var nextCommand = commandList[ip].Split(' ');
 				registers[ipRegister] = ip;
+				var nextCommand = commandList[ip].Split(' ');				
 				var opcode = nextCommand[0];
 				var parameters = nextCommand.Skip(1)
 					.Take(nextCommand.Length - 1)
@@ -75,6 +79,10 @@ namespace Day19
 						Eqrr(parameters);
 						break;
 				}
+				if (isPart2 && ip == 33)
+				{
+					return registers[4];
+				}
 				ip = registers[ipRegister] + 1;
 			}
 			return registers[0];
@@ -110,8 +118,6 @@ namespace Day19
 
 		private void Banr(int[] parameters)
 		{
-			int[] result = new int[registers.Length];
-			Array.Copy(registers, result, registers.Length);
 			var a = registers[parameters[0]];
 			var b = registers[parameters[1]];
 			registers[parameters[2]] = a & b;
